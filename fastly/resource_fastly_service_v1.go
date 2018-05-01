@@ -16,6 +16,21 @@ import (
 
 var fastlyNoServiceFoundErr = errors.New("No matching Fastly Service found")
 
+func resourceFastlyDomains() *schema.Resource {
+	return &schema.Resource{
+		Schema: map[string]*schema.Schema{
+			"name": {
+				Type:     schema.TypeString,
+				Required: true,
+			},
+			"comment": {
+				Type:     schema.TypeString,
+				Optional: true,
+			},
+		},
+	}
+}
+
 func resourceServiceV1() *schema.Resource {
 	return &schema.Resource{
 		Create: resourceServiceV1Create,
@@ -44,21 +59,8 @@ func resourceServiceV1() *schema.Resource {
 
 			"domain": {
 				Type:     schema.TypeSet,
-				Required: true,
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"name": {
-							Type:        schema.TypeString,
-							Required:    true,
-							Description: "The domain that this Service will respond to",
-						},
-
-						"comment": {
-							Type:     schema.TypeString,
-							Optional: true,
-						},
-					},
-				},
+				Optional: true,
+				Elem:     resourceFastlyDomains(),
 			},
 
 			"condition": {
